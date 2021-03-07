@@ -1,0 +1,29 @@
+{
+  "name": "userservice",
+  "version": "0.1.0",
+  "description": "Users microservice for the towech-finance app",
+  "main": "./src/app.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/towech-financeApp/UserService.git"
+  },
+  "author": "Jose Tow",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/towech-financeApp/UserService/issues"
+  },
+  "homepage": "https://github.com/towech-financeApp/UserService#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.11.19",
+    "morgan": "^1.10.0"
+  }
+}
