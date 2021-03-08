@@ -13,6 +13,9 @@ const morgan = require("morgan");
 
 const routes = require("./routes/index");
 
+// utils
+const logger = require("./utils/logger");
+
 const app = express();
 
 // Settings
@@ -37,7 +40,7 @@ if (process.env.ENABLE_CORS == "true") {
     if ("OPTIONS" === req.method) { res.sendStatus(204); }
     else { next(); }
   });
-  console.log("CORS enabled");
+  logger.info("CORS enabled");
 }
 
 // Setup routes
@@ -45,5 +48,5 @@ app.use('/', routes);
 
 // Start server
 app.listen(app.get("port"), () => {
-  console.log(`Server running on port: ${app.get("port")}`);
+  logger.info(`Server running on port: ${app.get("port")}`);
 });
