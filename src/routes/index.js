@@ -6,7 +6,12 @@
  */
 const express = require("express");
 
+const authentication = require("./authentication/");
+
 const router = express.Router();
+
+// Authentication routes
+router.use("/auth", authentication);
 
 // The rest of the Routes will return a 404 error
 router.get('*', (_, res) => {
