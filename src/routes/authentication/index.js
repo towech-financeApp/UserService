@@ -14,6 +14,7 @@ const User = require('../../database/models/user');
 // utils
 const { checkAdmin } = require("../../utils/checkAuth");
 const errorHandler = require("../../utils/errorhandler");
+const generateToken = require("../../utils/generateToken");
 const { validateEmail } = require("../../utils/validator");
 
 const router = express.Router();
@@ -52,16 +53,58 @@ router.post("/register", checkAdmin, async (req, res) => {
 
     // TODO: send the password via email
 
-    const payload = { 
+    const payload = {
       id: newUser.id,
     }
 
     res.send(payload);
   }
   catch (exception) { errorHandler.sendHttpError(res, exception); }
+
 });
 
-router.get("/test", async (req, res) => {
+// login: creates a new refresh token and authtoken for the user
+router.post("/login", async (req, res) => {
+  const { username, password, keepSession } = req.body;
+
+  try {
+    // Searches in the database for the user
+    const user = await User.findOne({ username });
+    if (!user) throw errorHandler.authenticationError({ 'Login Error': { username: "Bad credentials" } });
+
+    // Compares the password
+    const valid_password = await bcrypt.compare(password ? password : "", user.password);
+    if (!valid_password) throw errorHandler.authenticationError({ 'Login Error': { username: "Bad credentials" } });
+
+    // Creates the tokens
+    const refresh_token = generateToken.generateRefreshToken(user, keepSession);
+    const auth_token = generateToken.generateAuthToken(user);
+
+    // Adds the refreshToken to the user
+    if (keepSession) {
+      let newRefreshTokens = user.refreshTokens
+
+      // removes the last used refreshToken if there are more than 5
+      if (newRefreshTokens.length >= 5) { newRefreshTokens.shift(); };
+
+      newRefreshTokens.push(refresh_token);
+
+      await User.findByIdAndUpdate(user.id, { refreshTokens: newRefreshTokens });
+
+    } else {
+      await User.findByIdAndUpdate(user.id, { singleSessionToken: refresh_token });
+    }
+
+    // Sends the refreshToken as cookie
+    res.cookie("jid", refresh_token, { httpOnly: true });
+    res.send({ token: auth_token });
+
+  }
+  catch (exception) { errorHandler.sendHttpError(res, exception); }
+
+});
+
+router.get("/test", async (_, res) => {
   const token = await jwt.sign("testo", process.env.AUTH_TOKEN_KEY);
 
   res.send(token);
