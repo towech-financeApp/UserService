@@ -8,6 +8,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 const jwt = require("jsonwebtoken");
 
+// database
+const User = require('../database/models/user');
+
 // utils
 const errorhandler = require("./errorhandler");
 
@@ -19,7 +22,7 @@ const isAuth = (token, isRefresh = false) => {
     return decoded_token;
   }
   catch (err) {
-    throw err;
+    throw errorhandler.authenticationError("Invalid Token", { token: "Invalid Token" });
   }
 
 };
@@ -54,4 +57,31 @@ module.exports.checkAdmin = (req, res, next) => {
     next();
   }
   catch (err) { errorhandler.sendHttpError(res, err); }
+};
+
+// Middleware that validates the refreshToken
+module.exports.checkRefresh = async (req, res, next) => {
+  // Gets the refresh_token from the cookie
+  try {
+    const refresh_token = req.cookies.jid;
+    if (!refresh_token) throw errorhandler.authenticationError("No refresh token", { refresh_token: "No token provided" });
+
+    // Validates the token
+    const decoded_token = isAuth(refresh_token, true);
+
+    // Checks if the user still exists
+    const user = await User.findById(decoded_token.id);
+    if (!user) throw errorhandler.serverError("User deleted", { user: "user deleted" });
+
+    // Checks if the user has the token as still valid
+    if (user.singleSessionToken !== refresh_token && !user.refreshTokens.includes(refresh_token)) {
+      throw errorhandler.authenticationError("Invalid token", { refresh_token: "Invalid Token" });
+    }
+
+    req.user = user;
+
+    next();
+
+  } catch (exception) { errorhandler.sendHttpError(res, exception); }
+
 };

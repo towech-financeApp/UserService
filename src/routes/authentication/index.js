@@ -7,14 +7,16 @@
 const bcrypt = require("bcryptjs");
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const { route } = require("..");
 
 // database
 const User = require('../../database/models/user');
 
 // utils
-const { checkAdmin } = require("../../utils/checkAuth");
+const { checkAdmin, checkRefresh } = require("../../utils/checkAuth");
 const errorHandler = require("../../utils/errorhandler");
 const generateToken = require("../../utils/generateToken");
+const { logoutUser } = require("../../utils/logoutUser");
 const { validateEmail } = require("../../utils/validator");
 
 const router = express.Router();
@@ -104,10 +106,39 @@ router.post("/login", async (req, res) => {
 
 });
 
-router.get("/test", async (_, res) => {
-  const token = await jwt.sign("testo", process.env.AUTH_TOKEN_KEY);
+// refresh_token: if a valid refreshToken is provided, creates a new auhtToken
+router.post("/refresh", checkRefresh, async (req, res) => {
 
-  res.send(token);
-})
+  const auth_token = generateToken.generateAuthToken(req.user);
+
+  res.send({ token: auth_token });
+});
+
+// logout: if a valid refreshToken is provided, removes the refreshToken from the user
+router.post("/logout", checkRefresh, async (req, res) => {
+
+  try {
+  
+    // Logs out the refreshToken
+    await logoutUser(req.user, req.cookies.jid);
+
+    res.sendStatus(204);
+  }
+  catch (err) { errorHandler.sendHttpError(res, err); }
+
+});
+
+// logout-all: if a valid refreshToken is provided, removes all the tokens from the user
+router.post("/logout-all", checkRefresh, async (req, res) => {
+
+  try {
+    // Updates the user and removes all tokens
+    await logoutUser(req.user);
+
+    res.sendStatus(204);
+  }
+  catch (err) { errorHandler.sendHttpError(res, err); }
+
+});
 
 module.exports = router;
