@@ -7,7 +7,6 @@
 
 const dotenv = require("dotenv");
 dotenv.config();
-require("./database/mongoose");
 
 const express = require("express");
 const morgan = require("morgan");
