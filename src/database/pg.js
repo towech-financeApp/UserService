@@ -18,6 +18,21 @@ const addUser = async(name, username, password, role) => {
   return response.rows[0];
 }
 
+const getUserByEmail = async(username) => {
+  const response = await pool.query(`SELECT * FROM Users WHERE username = '${username}'`);
+  return response.rows[0];
+};
+
+const updateRefreshTokens = async(userId, tokens) => {
+  const response = await pool.query(`UPDATE Users SET refreshTokens = '{${tokens}}' WHERE userId = ${userId} RETURNING *`)
+  return response;
+};
+
+const updateSingleSessionToken = async(userId, token) => {
+  const response = await pool.query(`UPDATE Users SET singleSessionToken = '${token}' WHERE userId = ${userId} RETURNING *`)
+  return response;
+}
+
 const userExistsByEmail = async(username) => {
   const response = await pool.query(`SELECT * FROM Users WHERE username = '${username}'`);
   return response.rowCount > 0;
@@ -26,5 +41,8 @@ const userExistsByEmail = async(username) => {
 
 module.exports = {
   addUser,
+  getUserByEmail,
+  updateRefreshTokens,
+  updateSingleSessionToken,
   userExistsByEmail,
 }

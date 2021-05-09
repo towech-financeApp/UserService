@@ -61,7 +61,7 @@ router.post("/login", async (req, res) => {
 
   try {
     // Searches in the database for the user
-    const user = await User.findOne({ username });
+    const user = await database.getUserByEmail(username);
     if (!user) throw errorHandler.authenticationError({ 'Error': { username: "Bad credentials" } });
 
     // Compares the password
@@ -74,17 +74,17 @@ router.post("/login", async (req, res) => {
 
     // Adds the refreshToken to the user
     if (keepSession) {
-      let newRefreshTokens = user.refreshTokens
+      let newRefreshTokens = (user.refreshtokens) ? user.refreshtokens : [];
 
       // removes the last used refreshToken if there are more than 5
       if (newRefreshTokens.length >= 5) { newRefreshTokens.shift(); };
 
       newRefreshTokens.push(refresh_token);
 
-      await User.findByIdAndUpdate(user.id, { refreshTokens: newRefreshTokens });
+      await database.updateRefreshTokens(user.userid, newRefreshTokens);
 
     } else {
-      await User.findByIdAndUpdate(user.id, { singleSessionToken: refresh_token });
+      await database.updateSingleSessionToken(user.userid, refresh_token);
     }
 
     // Sends the refreshToken as cookie
