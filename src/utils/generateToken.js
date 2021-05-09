@@ -15,7 +15,7 @@ const logger = require('./logger');
 module.exports.generateAuthToken = (user) => {
   return jwt.sign({
     username: user.username,
-    id: user.id,
+    id: user.userid,
     role: user.role,
   }, process.env.USERSERVICE_AUTH_TOKEN_KEY, {
     expiresIn: "1m",
@@ -25,7 +25,7 @@ module.exports.generateAuthToken = (user) => {
 // creates a refreshToken
 module.exports.generateRefreshToken = (user, keepSession) => {
   return jwt.sign({
-    id: user.id,
+    id: user.userid,
   }, process.env.USERSERVICE_REFRESH_TOKEN_KEY, {
     expiresIn: keepSession ? "30d" : "1h",
   });
