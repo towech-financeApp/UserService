@@ -15,8 +15,8 @@ const router = express.Router();
 router.use("/auth", cookieParser(), authentication);
 
 // The rest of the Routes will return a 404 error
-router.get('*', (_, res) => {
-  res.send(404).send("NOT FOUND");
+router.use('*', (_, res) => {
+  res.status(404).send("NOT FOUND");
 });
 
 module.exports = router;

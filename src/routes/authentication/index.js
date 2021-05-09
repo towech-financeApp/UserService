@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
 const { route } = require("..");
 
 // database
-const User = require('../../database/models/user');
+const database = require('../../database/pg');
 
 // utils
 const { checkAdmin, checkRefresh } = require("../../utils/checkAuth");
@@ -27,36 +27,26 @@ router.post("/register", checkAdmin, async (req, res) => {
 
   try {
     // Validates the email
-    const { valid, errors } = validateEmail(email);
+    const { valid, errors } = await validateEmail(email);
     if (!valid) throw errorHandler.userInputError('Invalid fields', errors);
-
-    // Checks for user availability, if it already exists, sends an error
-    const userExists = await User.findOne({ username: email });
-    if (userExists) throw errorHandler.userInputError('Taken username', { username: 'This username is taken' });
 
     // Sets the role for the user
     let userRole = "user";
     if (role) { if (role.toUpperCase() === "ADMIN") { userRole = "admin" }; }
-
+    
     // Creates a temporary 8 character password
     const password = Math.random().toString(36).substring(2, 10);
 
     // Hashes the password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Adds the new User to the database
-    const newUser = await new User({
-      name: name,
-      username: email,
-      password: hashedPassword,
-      role: userRole,
-      createdAt: new Date().toISOString(),
-    }).save();
+    const newUser = await database.addUser(name, email, hashedPassword, userRole);
 
     // TODO: send the password via email
 
     const payload = {
-      id: newUser.id,
+      id: newUser.userId,
+      password: password,
     }
 
     res.send(payload);
