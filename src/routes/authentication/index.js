@@ -72,11 +72,11 @@ router.post("/login", async (req, res) => {
   try {
     // Searches in the database for the user
     const user = await User.findOne({ username });
-    if (!user) throw errorHandler.authenticationError({ 'Login Error': { username: "Bad credentials" } });
+    if (!user) throw errorHandler.authenticationError({ 'Error': { username: "Bad credentials" } });
 
     // Compares the password
     const valid_password = await bcrypt.compare(password ? password : "", user.password);
-    if (!valid_password) throw errorHandler.authenticationError({ 'Login Error': { username: "Bad credentials" } });
+    if (!valid_password) throw errorHandler.authenticationError({ 'Error': { username: "Bad credentials" } });
 
     // Creates the tokens
     const refresh_token = generateToken.generateRefreshToken(user, keepSession);
@@ -122,6 +122,8 @@ router.post("/logout", checkRefresh, async (req, res) => {
     // Logs out the refreshToken
     await logoutUser(req.user, req.cookies.jid);
 
+    //res.cookie("jid", '', { httpOnly: true, maxAge: 0 });
+    res.clearCookie("jid");
     res.sendStatus(204);
   }
   catch (err) { errorHandler.sendHttpError(res, err); }
