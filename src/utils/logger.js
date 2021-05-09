@@ -46,7 +46,7 @@ const logger = winston.createLogger({
 });
 
 // If not in production then the logs will also be added to the `console`
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.USERSERVICE_NODE_ENV !== 'production') {
   logger.add(
     new winston.transports.Console({
       level: 'silly',

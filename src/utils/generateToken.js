@@ -17,7 +17,7 @@ module.exports.generateAuthToken = (user) => {
     username: user.username,
     id: user.id,
     role: user.role,
-  }, process.env.AUTH_TOKEN_KEY, {
+  }, process.env.USERSERVICE_AUTH_TOKEN_KEY, {
     expiresIn: "1m",
   });
 };
@@ -26,7 +26,7 @@ module.exports.generateAuthToken = (user) => {
 module.exports.generateRefreshToken = (user, keepSession) => {
   return jwt.sign({
     id: user.id,
-  }, process.env.REFRESH_TOKEN_KEY, {
+  }, process.env.USERSERVICE_REFRESH_TOKEN_KEY, {
     expiresIn: keepSession ? "30d" : "1h",
   });
 };

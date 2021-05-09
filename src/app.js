@@ -19,7 +19,7 @@ const logger = require("./utils/logger");
 const app = express();
 
 // Settings
-app.set("port", process.env.PORT || 3000);
+app.set("port", process.env.USERSERVICE_PORT || 3000);
 
 // Middleware
 
@@ -27,10 +27,10 @@ app.set("port", process.env.PORT || 3000);
 app.use(express.json());
 
 //morgan: allows the console to provide http protocol logs (only outside of production)
-if (process.env.NODE_ENV !== "production") { app.use(morgan("dev")); };
+if (process.env.USERSERVICE_NODE_ENV !== "production") { app.use(morgan("dev")); };
 
 // CORS: enabled on the env file
-if (process.env.ENABLE_CORS == "true") {
+if (process.env.USERSERVICE_ENABLE_CORS == "true") {
   app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
     res.header("Access-Control-Allow-Credentials", true);
