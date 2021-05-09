@@ -28,6 +28,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.19",
     "morgan": "^1.10.0",
+    "pg": "^8.6.0",
     "winston": "^3.3.3"
   }
 }
