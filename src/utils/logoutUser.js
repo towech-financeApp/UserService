@@ -5,20 +5,20 @@
  * Utility that removes the refresh tokens from a user if a token is provided,
  * only removes it, otherwise, removes all tokens
  */
-const User = require("../database/models/user");
+const database = require('../database/pg');
 
 module.exports.logoutUser = async (user, token = null) => {
 
   let singleSessionToken = "";
   let refreshTokens = [];
 
-  // If a token is provided, only that one is filtered
+  // If a token is provided, only that one is removed
   if (token) {
-    singleSessionToken = (user.singleSessionToken === token) ? "" : user.singleSessionToken;
-    refreshTokens = user.refreshTokens.filter(rToken => rToken != token);
+    singleSessionToken = (user.singlesessiontoken === token) ? "" : user.singlesessiontoken;
+    refreshTokens = user.refreshtokens.filter(rToken => rToken != token);
   }
 
   // Updates the user
-  await User.findByIdAndUpdate(user.id, { singleSessionToken, refreshTokens });
+  await database.logoutUser(user.userid, refreshTokens, singleSessionToken);
 
 };

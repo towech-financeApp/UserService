@@ -108,7 +108,6 @@ router.post("/refresh", checkRefresh, async (req, res) => {
 router.post("/logout", checkRefresh, async (req, res) => {
 
   try {
-  
     // Logs out the refreshToken
     await logoutUser(req.user, req.cookies.jid);
 
