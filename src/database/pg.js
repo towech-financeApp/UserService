@@ -18,8 +18,17 @@ const addUser = async(name, username, password, role) => {
   return response.rows[0];
 }
 
+const getUserById = async(id) => {
+  const response = await pool.query(`SELECT * FROM Users WHERE userid = ${id}`);
+  
+  if (response.rowCount == 0) return null
+  return response.rows[0];
+}
+
 const getUserByEmail = async(username) => {
   const response = await pool.query(`SELECT * FROM Users WHERE username = '${username}'`);
+  
+  if (response.rowCount == 0) return null
   return response.rows[0];
 };
 
@@ -41,6 +50,7 @@ const userExistsByEmail = async(username) => {
 
 module.exports = {
   addUser,
+  getUserById,
   getUserByEmail,
   updateRefreshTokens,
   updateSingleSessionToken,
