@@ -6,8 +6,6 @@
  */
 const bcrypt = require("bcryptjs");
 const express = require("express");
-const jwt = require("jsonwebtoken");
-const { route } = require("..");
 
 // database
 const database = require('../../database/pg');
@@ -40,7 +38,7 @@ router.post("/register", checkAdmin, async (req, res) => {
     // Hashes the password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const newUser = await database.addUser(name, email, hashedPassword, userRole);
+    const newUser = await database.addUser(name.trim(), email.trim(), hashedPassword, userRole);
 
     // TODO: send the password via email
 
