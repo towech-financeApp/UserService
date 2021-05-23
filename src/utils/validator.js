@@ -5,7 +5,7 @@
  * Contains functions that validate data
  */
 
-const database = require("../database/pg");
+const users = require('../database/models/users');
 
 /** validateEmail
  * Checks if a given string can be used as email
@@ -30,7 +30,7 @@ module.exports.validateEmail = async (email) => {
   }
 
   // Checks the DB to see if the user already exists
-  if (await database.userExistsByEmail(email)) {
+  if (await users.existsByEmail(email)) {
     errors.email = 'e-mail already registered';
   }
 

@@ -5,7 +5,7 @@
  * Utility that removes the refresh tokens from a user if a token is provided,
  * only removes it, otherwise, removes all tokens
  */
-const database = require('../database/pg');
+const users = require('../database/models/users');
 
 module.exports.logoutUser = async (user, token = null) => {
 
@@ -19,6 +19,6 @@ module.exports.logoutUser = async (user, token = null) => {
   }
 
   // Updates the user
-  await database.logoutUser(user.userid, refreshTokens, singleSessionToken);
+  await users.logout(user.userid, refreshTokens, singleSessionToken);
 
 };

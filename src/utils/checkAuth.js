@@ -9,7 +9,7 @@ dotenv.config();
 const jwt = require("jsonwebtoken");
 
 // database
-const database = require('../database/pg');
+const users = require('../database/models/users');
 
 // utils
 const errorhandler = require("./errorhandler");
@@ -70,7 +70,7 @@ module.exports.checkRefresh = async (req, res, next) => {
     const decoded_token = isAuth(refresh_token, true);
 
     // Checks if the user still exists
-    const user = await database.getUserById(decoded_token.id);
+    const user = await users.getById(decoded_token.id);
     if (!user) throw errorhandler.serverError("User deleted", { user: "user deleted" });
 
     // Checks if the user has the token as still valid

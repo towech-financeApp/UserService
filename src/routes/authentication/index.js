@@ -8,7 +8,7 @@ const bcrypt = require("bcryptjs");
 const express = require("express");
 
 // database
-const database = require('../../database/pg');
+const users = require('../../database/models/users');
 
 // utils
 const { checkAdmin, checkRefresh } = require("../../utils/checkAuth");
@@ -38,7 +38,7 @@ router.post("/register", checkAdmin, async (req, res) => {
     // Hashes the password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const newUser = await database.addUser(name.trim(), email.trim(), hashedPassword, userRole);
+    const newUser = await users.add(name.trim(), email.trim(), hashedPassword, userRole);
 
     // TODO: send the password via email
 
@@ -59,7 +59,7 @@ router.post("/login", async (req, res) => {
 
   try {
     // Searches in the database for the user
-    const user = await database.getUserByEmail(username);
+    const user = await users.getByEmail(username);
     if (!user) throw errorHandler.authenticationError({ 'Error': { username: "Bad credentials" } });
 
     // Compares the password
@@ -79,10 +79,10 @@ router.post("/login", async (req, res) => {
 
       newRefreshTokens.push(refresh_token);
 
-      await database.updateRefreshTokens(user.userid, newRefreshTokens);
+      await users.updateRefreshTokens(user.userid, newRefreshTokens);
 
     } else {
-      await database.updateSingleSessionToken(user.userid, refresh_token);
+      await users.updateSingleSessionToken(user.userid, refresh_token);
     }
 
     // Sends the refreshToken as cookie

@@ -1,64 +1,27 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
-const { Pool } = require('pg');
+const pg = require('pg');
+const logger = require('../utils/logger');
+const { serverError } = require('../utils/errorhandler');
 
-const pool = new Pool({
-  database: process.env.USERSERVICE_DATABASE,
-  host: process.env.USERSERVICE_DB_HOST,
-  password: process.env.USERSERVICE_DB_PASSWORD,
-  port: process.env.USERSERVICE_DB_PORT,
-  user: process.env.USERSERVICE_DB_USER
-});
+const client = new pg.Client(process.env.USERSERVICE_DATABASE_URL);
+client.connect()
+  .then(() => logger.info('Connected to database'))
+  .catch((err) => {
+    if (process.env.USERSERVICE_DATABASE_URL) {
+      logger.error(`${err}`);
+      logger.info('Process exited with code 1');
+    } else {
+      logger.error('No Postgres url provided, exiting with error 1')
+    }
+    process.exit(1);
+  });
 
-
-
-const addUser = async(name, username, password, role) => {
-  const response = await pool.query(`INSERT INTO Users(name, username, password, role) VALUES('${name}', '${username}', '${password}', '${role}') RETURNING *`);
-  return response.rows[0];
-}
-
-const getUserById = async(userId) => {
-  const response = await pool.query(`SELECT * FROM Users WHERE userid = ${userId}`);
-  
-  if (response.rowCount == 0) return null
-  return response.rows[0];
-}
-
-const getUserByEmail = async(username) => {
-  const response = await pool.query(`SELECT * FROM Users WHERE username = '${username}'`);
-  
-  if (response.rowCount == 0) return null
-  return response.rows[0];
-};
-
-const logoutUser = async(userId, refreshTokens, singleSessionToken) => {
-  const response = await pool.query(`UPDATE Users SET refreshTokens = '{${refreshTokens}}', singleSessionToken = '${singleSessionToken}' WHERE userId = ${userId} RETURNING *`);
-  return response;
-};
-
-const updateRefreshTokens = async(userId, tokens) => {
-  const response = await pool.query(`UPDATE Users SET refreshTokens = '{${tokens}}' WHERE userId = ${userId} RETURNING *`)
-  return response;
-};
-
-const updateSingleSessionToken = async(userId, token) => {
-  const response = await pool.query(`UPDATE Users SET singleSessionToken = '${token}' WHERE userId = ${userId} RETURNING *`)
-  return response;
-}
-
-const userExistsByEmail = async(username) => {
-  const response = await pool.query(`SELECT * FROM Users WHERE username = '${username}'`);
-  return response.rowCount > 0;
-};
-
-
-module.exports = {
-  addUser,
-  getUserById,
-  getUserByEmail,
-  logoutUser,
-  updateRefreshTokens,
-  updateSingleSessionToken,
-  userExistsByEmail,
+module.exports.query = async (query) => {
+  try {
+    const response = await client.query(query);
+    return response
+  }
+  catch (exception) { throw serverError('Database error', exception) }
 }
