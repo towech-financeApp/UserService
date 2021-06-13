@@ -8,8 +8,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Libraries
-import Queue from 'tow96-amqpwrapper';
+import Queue, { AmqpMessage } from 'tow96-amqpwrapper';
 import logger from 'tow96-logger';
+import processMessage from './routes';
 
 // Gets some values from the env, if not present, uses default values
 const queueName = process.env.QUEUE_NAME || 'userQueue';
@@ -27,27 +28,26 @@ const runWorker = async () => {
   // Begins to listen for messages on the queue
   logger.info(`Listening for messages on queue ${queueName}`);
 
+  // Using the channel cosume, the program enters a loop that will check continously
   channel.consume(
     queueName,
-    (msg) => {
-      if (!msg) {
-        return;
-      }
+    async (msg) => {
+      if (!msg) return; // If there is no message, finsihes and checks again, this allows for faster iterations
 
+      // Handles the message
       try {
-        logger.debug(msg.content.toString());
+        // Processes the message
+        const content = await processMessage(JSON.parse(msg.content.toString()));
 
-        logger.debug(msg.properties.replyTo);
-        if (msg.properties.replyTo) {
-          channel.sendToQueue(msg.properties.replyTo, msg.content, {
-            correlationId: msg.properties.correlationId,
-          });
-        }
+        // reply if necessary
+        if (msg.properties.replyTo)
+          Queue.respondToQueue(channel, msg.properties.replyTo, msg.properties.correlationId, content);
+
+        // Acknowledges the message
+        channel.ack(msg);
       } catch (err: any) {
         logger.error(err);
       }
-
-      channel.ack(msg);
     },
     { noAck: false },
   );

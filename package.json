@@ -22,6 +22,7 @@
   "homepage": "https://github.com/towech-financeApp/UserService#readme",
   "devDependencies": {
     "@types/amqplib": "^0.8.0",
+    "@types/bcrypt-nodejs": "0.0.31",
     "@types/node": "^15.12.2",
     "@types/pg": "^8.6.0",
     "prettier": "^2.3.1",
@@ -33,6 +34,7 @@
   },
   "dependencies": {
     "amqplib": "^0.8.0",
+    "bcrypt-nodejs": "0.0.3",
     "dotenv": "^10.0.0",
     "pg": "^8.6.0",
     "tow96-amqpwrapper": "0.0.1",
