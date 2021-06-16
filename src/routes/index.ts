@@ -5,8 +5,9 @@
  * Index that holds all the "routes" of the worker
  */
 import { AmqpMessage } from 'tow96-amqpwrapper';
-import logger from 'tow96-logger';
+
 import register from './register';
+import getByUsername from './get-user';
 
 /** processMessage
  * switch functions that calls the approppriate process for the worker
@@ -23,6 +24,8 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
   switch (type) {
     case 'register':
       return await register(payload);
+    case 'get-byUsername':
+      return await getByUsername(payload);
     default:
       return AmqpMessage.errorMessage(`Unsupported function type: ${type}`);
   }

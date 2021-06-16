@@ -11,7 +11,7 @@ import logger from 'tow96-logger';
 
 // Utils
 import Validator from '../utils/validator';
-import User from '../database/models/user';
+import DbUsers from '../database/tables/dbUsers';
 
 const register = async (message: any): Promise<AmqpMessage> => {
   // Destrucutres the payload
@@ -33,7 +33,7 @@ const register = async (message: any): Promise<AmqpMessage> => {
     let hashedPassword = bcrypt.hashSync(password, '');
     
 
-    const newUser = await User.add(name.trim(), email.trim(), hashedPassword, role);
+    const newUser = await DbUsers.add(name.trim(), email.trim(), hashedPassword, role);
 
     // removes the password from the newUser before sending it
     newUser.password = undefined;

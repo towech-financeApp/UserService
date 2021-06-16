@@ -5,7 +5,7 @@
  * Class that contains functions that validate data
  */
 import logger from 'tow96-logger';
-import User from '../database/models/user';
+import User from '../database/tables/dbUsers';
 
 export default class Validator {
   static validateEmail = async (email: string): Promise<{ valid: boolean; errors: any }> => {
