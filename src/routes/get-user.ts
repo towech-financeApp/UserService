@@ -7,14 +7,14 @@
 import { AmqpMessage } from 'tow96-amqpwrapper';
 
 // Utils
-import Test from '../database/tables/dbUsers';
+import DbUsers from '../database/tables/dbUsers';
 
 const getByUsername = async (message: any): Promise<AmqpMessage> => {
   // Destructures the email
   const { username } = message;
 
   try {
-    const user = await Test.getByEmail(username);
+    const user = await DbUsers.getByEmail(username);
 
     return new AmqpMessage(user, 'get-byUsername', 200);
   }

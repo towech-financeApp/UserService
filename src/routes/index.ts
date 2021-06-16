@@ -6,8 +6,12 @@
  */
 import { AmqpMessage } from 'tow96-amqpwrapper';
 
-import register from './register';
+import logger from 'tow96-logger';
+
+// routes
 import getByUsername from './get-user';
+import login from './login';
+import register from './register';
 
 /** processMessage
  * switch functions that calls the approppriate process for the worker
@@ -22,11 +26,14 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
 
   // Switches the message to execute the appropriate function
   switch (type) {
-    case 'register':
-      return await register(payload);
     case 'get-byUsername':
       return await getByUsername(payload);
+    case 'login':
+      return await login(payload);
+    case 'register':
+      return await register(payload);
     default:
+      logger.debug(`Unsupported function type: ${type}`);
       return AmqpMessage.errorMessage(`Unsupported function type: ${type}`);
   }
 };

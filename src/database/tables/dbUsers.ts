@@ -36,4 +36,17 @@ export default class DbUsers {
     const response = await Query(`SELECT * FROM Users WHERE username = '${username}'`);
     return response.rows[0] as User;
   };
+
+  /** login
+   * Gets the user with the given email
+   *
+   * @param {User} user The user that will be updated
+   *
+   * @returns {User} The corrected user
+   */
+  static login = async (user: User): Promise<User> => {
+    const response = await Query(`UPDATE Users SET refreshTokens = '{${user.refreshtokens}}', singleSessionToken = '${user.singlesessiontoken}' WHERE userID = ${user.userid} RETURNING *`);
+
+    return response.rows[0] as User;
+  };
 }
