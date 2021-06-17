@@ -15,7 +15,8 @@ import DbUsers from '../database/tables/dbUsers';
 
 const register = async (message: any): Promise<AmqpMessage> => {
   // Destrucutres the payload
-  let { name, email, role } = message;
+  const { name, email,} = message;
+  let { role, } = message;
 
   try {
     // Validates the email
@@ -30,8 +31,7 @@ const register = async (message: any): Promise<AmqpMessage> => {
     logger.debug(password);
 
     // Hashes the password
-    let hashedPassword = bcrypt.hashSync(password, '');
-    
+    const hashedPassword = bcrypt.hashSync(password, '');
 
     const newUser = await DbUsers.add(name.trim(), email.trim(), hashedPassword, role);
 
