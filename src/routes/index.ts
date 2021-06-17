@@ -9,7 +9,7 @@ import { AmqpMessage } from 'tow96-amqpwrapper';
 import logger from 'tow96-logger';
 
 // routes
-import getByUsername from './get-user';
+import { getByUsername, getById } from './get-user';
 import login from './login';
 import register from './register';
 
@@ -28,6 +28,8 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
   switch (type) {
     case 'get-byUsername':
       return await getByUsername(payload);
+    case 'get-byId':
+      return await getById(payload);
     case 'login':
       return await login(payload);
     case 'register':

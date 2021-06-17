@@ -37,6 +37,18 @@ export default class DbUsers {
     return response.rows[0] as User;
   };
 
+  /** getById
+   * Gets the user with the given id
+   *
+   * @param {string} userid
+   *
+   * @returns {User} The user from the DB
+   */
+  static getById = async (userid: string): Promise<User> => {
+    const response = await Query(`SELECT * FROM Users WHERE userID = '${userid}'`);
+    return response.rows[0] as User;
+  };
+
   /** login
    * Gets the user with the given email
    *

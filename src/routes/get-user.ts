@@ -17,10 +17,22 @@ const getByUsername = async (message: any): Promise<AmqpMessage> => {
     const user = await DbUsers.getByEmail(username);
 
     return new AmqpMessage(user, 'get-byUsername', 200);
-  }
-  catch (err: any) {
+  } catch (err: any) {
     return AmqpMessage.errorMessage(`Unexpected error`, 500, err);
   }
 };
 
-export default getByUsername;
+const getById = async (message: any): Promise<AmqpMessage> => {
+  // Destructures the email
+  const { userid } = message;
+
+  try {
+    const user = await DbUsers.getById(userid);
+
+    return new AmqpMessage(user, 'get-byId', 200);
+  } catch (err: any) {
+    return AmqpMessage.errorMessage(`Unexpected error`, 500, err);
+  }
+};
+
+export { getByUsername, getById };
