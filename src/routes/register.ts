@@ -15,8 +15,8 @@ import DbUsers from '../database/tables/dbUsers';
 
 const register = async (message: any): Promise<AmqpMessage> => {
   // Destrucutres the payload
-  const { name, email,} = message;
-  let { role, } = message;
+  const { name, email } = message;
+  let { role } = message;
 
   try {
     // Validates the email
