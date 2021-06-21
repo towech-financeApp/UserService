@@ -11,12 +11,15 @@ dotenv.config();
 import Queue, { AmqpMessage } from 'tow96-amqpwrapper';
 import logger from 'tow96-logger';
 import processMessage from './routes';
+import connectToMongo from './database/mongo';
 
 // Gets some values from the env, if not present, uses default values
 const queueName = process.env.QUEUE_NAME || 'userQueue';
 
 // It's declared as function so it can be asynchronous
 const runWorker = async () => {
+  connectToMongo();
+
   // Connects to rabbitMQ and sets a channel up
   const connection = await Queue.startConnection();
   const channel = await Queue.setUpChannelAndExchange(connection);

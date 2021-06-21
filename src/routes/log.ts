@@ -8,16 +8,16 @@ import { AmqpMessage } from 'tow96-amqpwrapper';
 import logger from 'tow96-logger';
 
 // Utils
-import DbUsers from '../database/tables/dbUsers';
+import DbUsers from '../database/schemas/dbUsers';
 import { User } from '../Models';
 
-const login = async (message: User): Promise<AmqpMessage> => {
+const log = async (message: User): Promise<AmqpMessage> => {
   try {
-    const user = await DbUsers.login(message);
+    const user = await DbUsers.updateTokens(message);
     return new AmqpMessage(user, 'login', 200);
   } catch (err: any) {
     return AmqpMessage.errorMessage(`Unexpected error`, 500, err);
   }
 };
 
-export default login;
+export default log;

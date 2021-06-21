@@ -11,9 +11,11 @@ import logger from 'tow96-logger';
 
 // Utils
 import Validator from '../utils/validator';
-import DbUsers from '../database/tables/dbUsers';
+import DbUsers from '../database/schemas/dbUsers';
+// import DbUsers from '../database/tables/dbUsers';
 
 const register = async (message: any): Promise<AmqpMessage> => {
+  // return new AmqpMessage('newUser', 'register', 200);
   // Destrucutres the payload
   const { name, email } = message;
   let { role } = message;
