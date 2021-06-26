@@ -5,6 +5,7 @@
  * Function that returns a requested users
  */
 import { AmqpMessage } from 'tow96-amqpwrapper';
+import logger from 'tow96-logger';
 
 // Utils
 import DbUsers from '../database/schemas/dbUsers';

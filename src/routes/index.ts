@@ -28,9 +28,9 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
   switch (type) {
     case 'get-byUsername':
       return await getByUsername(payload);
-      case 'get-byId':
-        return await getById(payload);
-      case 'log':
+    case 'get-byId':
+      return await getById(payload);
+    case 'log':
       return await log(payload);
     case 'register':
       return await register(payload);
