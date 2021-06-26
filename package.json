@@ -4,11 +4,11 @@
   "description": "Worker for the Towech-Finance User service",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -w",
     "dev": "ts-node-dev --poll --respawn .",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
-    "postinstall": "tsc -w",
+    "postinstall": "tsc",
     "start": "node dist/index.js"
   },
   "repository": {
