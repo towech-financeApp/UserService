@@ -1,11 +1,10 @@
-/** register.js
+/** get-user.ts
  * Copyright (c) 2021, Jose Tow
  * All rights reserved.
  *
- * Function that returns a requested users
+ * Function that returns a requested user
  */
 import { AmqpMessage } from 'tow96-amqpwrapper';
-import logger from 'tow96-logger';
 
 // Utils
 import DbUsers from '../database/schemas/dbUsers';

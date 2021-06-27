@@ -11,13 +11,13 @@ CMD npm run dev
 
 # Build stage -----------------------------------------------------------------------
 FROM base as builder
-RUN npm install
+RUN npm ci
 COPY . .
 RUN npm run build
 
 # PROD stage ------------------------------------------------------------------------
 FROM base as prod
-RUN npm install --production
+RUN npm ci --production
 
 COPY --from=builder /usr/app/dist ./dist
 CMD node dist/index.js

@@ -1,11 +1,10 @@
-/** register.js
+/** log.ts
  * Copyright (c) 2021, Jose Tow
  * All rights reserved.
  *
  * Function that stores the given tokens
  */
 import { AmqpMessage } from 'tow96-amqpwrapper';
-import logger from 'tow96-logger';
 
 // Utils
 import DbUsers from '../database/schemas/dbUsers';

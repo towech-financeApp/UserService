@@ -1,11 +1,10 @@
-/** user.js
+/** dbUsers.ts
  * Copyright (c) 2021, Jose Tow
  * All rights reserved.
  *
  * Schema that describes the User and functions that use it
  */
 import mongoose from 'mongoose';
-import logger from 'tow96-logger';
 import { User } from '../../Models';
 
 const UserSchema = new mongoose.Schema({
@@ -23,18 +22,17 @@ const userCollection = mongoose.model('Users', UserSchema);
 
 // Functions to communicate with the DB
 export default class DbUsers {
-
   /** add
    * Adds a user to the DB
    *
-   * @param name
-   * @param username
-   * @param password
-   * @param role
+   * @param {string} name
+   * @param {string} username
+   * @param {string} password
+   * @param {string} role
    *
    * @returns The inserted transaction
    */
-  static add = async (name: string, username: string, password: string, role: string = 'user'): Promise<User> => {
+  static add = async (name: string, username: string, password: string, role = 'user'): Promise<User> => {
     const newUser = await new userCollection({
       name,
       username,
@@ -75,14 +73,12 @@ export default class DbUsers {
    *
    * @param {User} user The user that will be updated
    *
-   * @returns {User} The corrected user
+   * @returns {User} The updated user
    */
   static updateTokens = async (user: User): Promise<User> => {
-    
     const { refreshTokens, singleSessionToken } = user;
     const response = await userCollection.findByIdAndUpdate(user._id, { refreshTokens, singleSessionToken });
 
     return response as User;
   };
-
 }
