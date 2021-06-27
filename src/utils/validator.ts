@@ -4,7 +4,6 @@
  *
  * Class that contains functions that validate data
  */
-import logger from 'tow96-logger';
 import User from '../database/schemas/dbUsers';
 
 export default class Validator {
