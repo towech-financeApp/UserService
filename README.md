@@ -46,9 +46,7 @@ The repository has an [example environment](/env.sample) which contains all the
 necessary env variables for this service to work.
 
 ## Future_Improvements
-- [ ] Add sending email with the password when a user is registered
 - [ ] Add user modification
-- [ ] Move the authentication to the webApi
 
 ## Credits
 - Jose Tow [[@Tow96](https://github.com/Tow96)]

@@ -33,7 +33,7 @@ export default class DbUsers {
    * @returns The inserted transaction
    */
   static add = async (name: string, username: string, password: string, role = 'user'): Promise<User> => {
-    const newUser = await new userCollection({
+    const newUser: unknown = await new userCollection({
       name,
       username,
       password,

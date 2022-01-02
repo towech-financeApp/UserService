@@ -12,6 +12,7 @@ import logger from 'tow96-logger';
 // Utils
 import Validator from '../utils/validator';
 import DbUsers from '../database/schemas/dbUsers';
+import Mailer from '../utils/mailer';
 
 const register = async (message: any): Promise<AmqpMessage> => {
   // Destrucutres the payload
@@ -35,10 +36,11 @@ const register = async (message: any): Promise<AmqpMessage> => {
 
     const newUser = await DbUsers.add(name.trim(), email.trim(), hashedPassword, role);
 
-    // removes the password from the newUser before sending it
-    newUser.password = undefined;
+    // sends the password via email
+    Mailer.registrationEmail(newUser.username, newUser.name, password);
 
-    // TODO: send the password via email
+    // removes the password from the newUser before sending it to the API
+    newUser.password = undefined;
 
     const responseMessage = new AmqpMessage(newUser, 'register', 200);
 
