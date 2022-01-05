@@ -12,6 +12,7 @@ import logger from 'tow96-logger';
 import { getByUsername, getById } from './get-user';
 import log from './log';
 import register from './register';
+import editUser from './edit-user';
 
 /** processMessage
  * switch functions that calls the approppriate process for the worker
@@ -34,6 +35,8 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
       return await log(payload);
     case 'register':
       return await register(payload);
+    case 'edit-User':
+      return await editUser(payload);
     default:
       logger.debug(`Unsupported function type: ${type}`);
       return AmqpMessage.errorMessage(`Unsupported function type: ${type}`);

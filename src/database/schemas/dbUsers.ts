@@ -81,4 +81,10 @@ export default class DbUsers {
 
     return response as User;
   };
+
+  static updateUser = async (id: string, contents: User): Promise<User> => {
+    const response: User = await userCollection.findByIdAndUpdate(id, { $set: { ...contents } }, { new: true });
+
+    return response;
+  };
 }

@@ -20,9 +20,17 @@ const register = async (message: any): Promise<AmqpMessage> => {
   let { role } = message;
 
   try {
+    let errors = {};
+
     // Validates the email
     const emailValidation = await Validator.validateEmail(email);
-    if (!emailValidation.valid) return AmqpMessage.errorMessage('Invalid fields', 422, emailValidation.errors);
+    if (!emailValidation.valid) errors = { ...errors, ...emailValidation.errors };
+
+    // Validates the name
+    const nameValidation = await Validator.validateName(name);
+    if (!nameValidation.valid) errors = { ...errors, ...nameValidation.errors };
+
+    if (Object.keys(errors).length > 0) return AmqpMessage.errorMessage('Invalid Fields', 422, errors);
 
     // Sets the role
     if (role.toUpperCase() !== 'ADMIN') role = 'user';

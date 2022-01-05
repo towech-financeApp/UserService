@@ -28,4 +28,18 @@ export default class Validator {
       valid: Object.keys(errors).length < 1,
     };
   };
+
+  static validateName = async (name: string): Promise<{ valid: boolean; errors: any }> => {
+    const errors: any = {};
+
+    // Checks if name is not empty
+    if (name.trim() === '') {
+      errors.name = 'name must not be empty';
+    };
+
+    return {
+      errors,
+      valid: Object.keys(errors).length < 1,
+    };
+  };
 }
