@@ -82,9 +82,28 @@ export default class DbUsers {
     return response as User;
   };
 
+  /** updateUser
+   * updates the user's information
+   *
+   * @param {string} id The id of the user
+   * @param {User} contents The contents that will be updated
+   *
+   * @returns {User} The updated user
+   */
   static updateUser = async (id: string, contents: User): Promise<User> => {
     const response: User = await userCollection.findByIdAndUpdate(id, { $set: { ...contents } }, { new: true });
 
     return response;
+  };
+
+  /** changePassword
+   * updates the user's information
+   *
+   * @param {string} id The id of the user
+   * @param {string} password The new password
+   *
+   */
+  static changePassword = async (id: string, password: string): Promise<void> => {
+    await userCollection.findByIdAndUpdate(id, { password });
   };
 }

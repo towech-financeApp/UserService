@@ -13,6 +13,7 @@ import { getByUsername, getById } from './get-user';
 import log from './log';
 import register from './register';
 import editUser from './edit-user';
+import changePassword from './change-Password';
 
 /** processMessage
  * switch functions that calls the approppriate process for the worker
@@ -37,6 +38,8 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
       return await register(payload);
     case 'edit-User':
       return await editUser(payload);
+    case 'change-Password':
+      return await changePassword(payload);
     default:
       logger.debug(`Unsupported function type: ${type}`);
       return AmqpMessage.errorMessage(`Unsupported function type: ${type}`);

@@ -35,7 +35,7 @@ export default class Validator {
     // Checks if name is not empty
     if (name.trim() === '') {
       errors.name = 'name must not be empty';
-    };
+    }
 
     return {
       errors,
