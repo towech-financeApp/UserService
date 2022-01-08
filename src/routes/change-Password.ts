@@ -27,11 +27,19 @@ const changePassword = async (message: Message): Promise<AmqpMessage> => {
 
     // Validates that the provided old password is correct
     const validOldPassword = await bcrypt.compareSync(message.oldPassword, dbUser.password || '');
-    if (!validOldPassword) return AmqpMessage.errorMessage(`Invalid password`, 403);
+    if (!validOldPassword) return AmqpMessage.errorMessage(`Invalid password`, 422, { password: `Invalid password` });
 
     // Confirms that the new password and the confirmPassword are the same
+    if (message.newPassword.trim() === '')
+      return AmqpMessage.errorMessage(`Password can't be blank`, 422, {
+        confirmPassword: `Password can't be blank`,
+      });
+
     const validNewPassword = message.newPassword === message.confirmPassword;
-    if (!validNewPassword) return AmqpMessage.errorMessage(`Passwords are not the same`, 422);
+    if (!validNewPassword)
+      return AmqpMessage.errorMessage(`Passwords are not the same`, 422, {
+        confirmPassword: `Passwords are not the same`,
+      });
 
     // Hashes and changes the new password
     const hashedPassword = bcrypt.hashSync(message.newPassword, '');
