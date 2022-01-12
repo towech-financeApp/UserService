@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema({
   accountConfirmed: Boolean,
   refreshTokens: [String],
   singleSessionToken: String,
+  resetToken: String,
   createdAt: String,
 });
 
@@ -38,6 +39,7 @@ export default class DbUsers {
       username,
       password,
       role,
+      verified: true,
       createdAt: new Date().toISOString(),
     }).save();
 
@@ -107,5 +109,14 @@ export default class DbUsers {
     const response: User = await userCollection.findByIdAndUpdate(id, { password });
 
     return response;
+  };
+
+  static setResetToken = async (id: string, token: string | undefined): Promise<User> => {
+    const user = await userCollection.findByIdAndUpdate(id, { resetToken: token });
+
+    // If there is no user, throws an error
+    if (!user) throw { error: 'Inexistent user' };
+
+    return user;
   };
 }

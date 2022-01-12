@@ -10,34 +10,34 @@ import logger from 'tow96-logger';
 // Utils
 import DbUsers from '../database/schemas/dbUsers';
 
-const getByUsername = async (message: any): Promise<AmqpMessage> => {
-  logger.http(`get by email: ${message.username}`);
+export default class GetUser {
+  static byUsername = async (message: any): Promise<AmqpMessage> => {
+    logger.http(`get by email: ${message.username}`);
 
-  // Destructures the email
-  const { username } = message;
+    // Destructures the email
+    const { username } = message;
 
-  try {
-    const user = await DbUsers.getByEmail(username);
+    try {
+      const user = await DbUsers.getByEmail(username);
 
-    return new AmqpMessage(user, 'get-byUsername', 200);
-  } catch (err: any) {
-    return AmqpMessage.errorMessage(`Unexpected error`, 500, err);
-  }
-};
+      return new AmqpMessage(user, 'get-byUsername', 200);
+    } catch (err: any) {
+      return AmqpMessage.errorMessage(`Unexpected error`, 500, err);
+    }
+  };
 
-const getById = async (message: any): Promise<AmqpMessage> => {
-  logger.http(`get by id: ${message._id}`);
+  static byId = async (message: any): Promise<AmqpMessage> => {
+    logger.http(`get by id: ${message._id}`);
 
-  // Destructures the email
-  const { _id } = message;
+    // Destructures the email
+    const { _id } = message;
 
-  try {
-    const user = await DbUsers.getById(_id);
+    try {
+      const user = await DbUsers.getById(_id);
 
-    return new AmqpMessage(user, 'get-byId', 200);
-  } catch (err: any) {
-    return AmqpMessage.errorMessage(`Unexpected error`, 500, err);
-  }
-};
-
-export { getByUsername, getById };
+      return new AmqpMessage(user, 'get-byId', 200);
+    } catch (err: any) {
+      return AmqpMessage.errorMessage(`Unexpected error`, 500, err);
+    }
+  };
+}

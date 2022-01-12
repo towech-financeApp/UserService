@@ -17,41 +17,77 @@ interface Message {
   confirmPassword: string;
 }
 
-const changePassword = async (message: Message): Promise<AmqpMessage> => {
-  logger.http(`change password: ${message.user_id}`);
+export default class changePassword {
+  static withOldPass = async (message: Message): Promise<AmqpMessage> => {
+    logger.http(`change password: ${message.user_id}`);
 
-  try {
-    const dbUser = await DbUsers.getById(message.user_id);
+    try {
+      const dbUser = await DbUsers.getById(message.user_id);
 
-    // Confirms that the user still exists
-    if (!dbUser) return AmqpMessage.errorMessage(`User deleted`, 400);
+      // Confirms that the user still exists
+      if (!dbUser) return AmqpMessage.errorMessage(`User deleted`, 400);
 
-    // Validates that the provided old password is correct
-    const validOldPassword = await bcrypt.compareSync(message.oldPassword, dbUser.password || '');
-    if (!validOldPassword) return AmqpMessage.errorMessage(`Invalid password`, 422, { password: `Invalid password` });
+      // Validates that the provided old password is correct
+      const validOldPassword = await bcrypt.compareSync(message.oldPassword, dbUser.password || '');
+      if (!validOldPassword) return AmqpMessage.errorMessage(`Invalid password`, 422, { password: `Invalid password` });
 
-    // Confirms that the new password and the confirmPassword are the same
-    if (message.newPassword.trim() === '')
-      return AmqpMessage.errorMessage(`Password can't be blank`, 422, {
-        confirmPassword: `Password can't be blank`,
-      });
+      // Confirms that the new password and the confirmPassword are the same
+      if (message.newPassword.trim() === '')
+        return AmqpMessage.errorMessage(`Password can't be blank`, 422, {
+          confirmPassword: `Password can't be blank`,
+        });
 
-    const validNewPassword = message.newPassword === message.confirmPassword;
-    if (!validNewPassword)
-      return AmqpMessage.errorMessage(`Passwords are not the same`, 422, {
-        confirmPassword: `Passwords are not the same`,
-      });
+      const validNewPassword = message.newPassword === message.confirmPassword;
+      if (!validNewPassword)
+        return AmqpMessage.errorMessage(`Passwords are not the same`, 422, {
+          confirmPassword: `Passwords are not the same`,
+        });
 
-    // Hashes and changes the new password
-    const hashedPassword = bcrypt.hashSync(message.newPassword, '');
-    const nuUser = await DbUsers.changePassword(message.user_id, hashedPassword);
+      // Hashes and changes the new password
+      const hashedPassword = bcrypt.hashSync(message.newPassword, '');
+      const nuUser = await DbUsers.changePassword(message.user_id, hashedPassword);
 
-    Mailer.passwordChange(nuUser);
+      Mailer.passwordChange(nuUser);
 
-    return new AmqpMessage(null, 'change-Password', 204);
-  } catch (e) {
-    return AmqpMessage.errorMessage(`Unexpected error`, 500, e);
-  }
-};
+      return new AmqpMessage(null, 'change-Password', 204);
+    } catch (e) {
+      return AmqpMessage.errorMessage(`Unexpected error`, 500, e);
+    }
+  };
 
-export default changePassword;
+  static withReset = async (message: Message): Promise<AmqpMessage> => {
+    logger.http(`change password: ${message.user_id}`);
+
+    try {
+      const dbUser = await DbUsers.getById(message.user_id);
+
+      // Confirms that the user still exists
+      if (!dbUser) return AmqpMessage.errorMessage(`User deleted`, 400);
+
+      // Confirms that the new password and the confirmPassword are the same
+      if (message.newPassword.trim() === '')
+        return AmqpMessage.errorMessage(`Password can't be blank`, 422, {
+          confirmPassword: `Password can't be blank`,
+        });
+
+      const validNewPassword = message.newPassword === message.confirmPassword;
+      if (!validNewPassword)
+        return AmqpMessage.errorMessage(`Passwords are not the same`, 422, {
+          confirmPassword: `Passwords are not the same`,
+        });
+
+      // Hashes and changes the new password
+      const hashedPassword = bcrypt.hashSync(message.newPassword, '');
+      const nuUser = await DbUsers.changePassword(message.user_id, hashedPassword);
+
+      Mailer.passwordChange(nuUser);
+
+      // Removes the resetToken
+      await DbUsers.setResetToken(message.user_id, undefined);
+
+      return new AmqpMessage(null, 'change-Password', 204);
+    } catch (e) {
+      return AmqpMessage.errorMessage(`Unexpected error`, 500, e);
+    }
+  };
+}

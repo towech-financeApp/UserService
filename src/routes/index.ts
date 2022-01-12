@@ -9,11 +9,12 @@ import { AmqpMessage } from 'tow96-amqpwrapper';
 import logger from 'tow96-logger';
 
 // routes
-import { getByUsername, getById } from './get-user';
+import GetUser from './get-user';
 import log from './log';
 import register from './register';
 import editUser from './edit-user';
 import changePassword from './change-Password';
+import resetPassword from './password-reset';
 
 /** processMessage
  * switch functions that calls the approppriate process for the worker
@@ -29,9 +30,9 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
   // Switches the message to execute the appropriate function
   switch (type) {
     case 'get-byUsername':
-      return await getByUsername(payload);
+      return await GetUser.byUsername(payload);
     case 'get-byId':
-      return await getById(payload);
+      return await GetUser.byId(payload);
     case 'log':
       return await log(payload);
     case 'register':
@@ -39,7 +40,11 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
     case 'edit-User':
       return await editUser(payload);
     case 'change-Password':
-      return await changePassword(payload);
+      return await changePassword.withOldPass(payload);
+    case 'change-Password-Force':
+      return await changePassword.withReset(payload);
+    case 'password-reset':
+      return await resetPassword.set(payload);
     default:
       logger.debug(`Unsupported function type: ${type}`);
       return AmqpMessage.errorMessage(`Unsupported function type: ${type}`);

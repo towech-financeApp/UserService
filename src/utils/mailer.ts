@@ -80,10 +80,32 @@ export default class Mailer {
         greeting: `Hi`,
         name: user.name,
         intro: `Your password has been succesfully changed`,
-        signature: `Thanks`
+        signature: `Thanks`,
       },
     };
 
     Mailer.sendEmail(user.username, 'Towech-FinanceApp password change', content);
+  };
+
+  static resetPasswordEmail = async (user: User, token: string) => {
+    const content: mailgen.Content = {
+      body: {
+        greeting: `Hi`,
+        name: user.name,
+        intro: `You've asked for a password reset.`,
+        action: {
+          instructions: `To restore your password, click on the following link. It'll only work for 24 hours`,
+          button: {
+            color: `#22BC66`,
+            text: `Reset my password`,
+            link: `${process.env.FRONTEND}/reset/${token}`,
+          },
+        },
+        outro: `If you didn't request for this, ignore this email. Never send this link to anyone.`,
+        signature: `From`,
+      },
+    };
+
+    Mailer.sendEmail(user.username, `Towech-FinanceApp password reset`, content);
   };
 }
