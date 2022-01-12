@@ -5,11 +5,14 @@
  * Function that returns a requested user
  */
 import { AmqpMessage } from 'tow96-amqpwrapper';
+import logger from 'tow96-logger';
 
 // Utils
 import DbUsers from '../database/schemas/dbUsers';
 
 const getByUsername = async (message: any): Promise<AmqpMessage> => {
+  logger.http(`get by email: ${message.username}`);
+
   // Destructures the email
   const { username } = message;
 
@@ -23,6 +26,8 @@ const getByUsername = async (message: any): Promise<AmqpMessage> => {
 };
 
 const getById = async (message: any): Promise<AmqpMessage> => {
+  logger.http(`get by id: ${message._id}`);
+
   // Destructures the email
   const { _id } = message;
 

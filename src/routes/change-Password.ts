@@ -8,6 +8,7 @@ import { AmqpMessage } from 'tow96-amqpwrapper';
 import bcrypt from 'bcrypt-nodejs';
 import logger from 'tow96-logger';
 import DbUsers from '../database/schemas/dbUsers';
+import Mailer from '../utils/mailer';
 
 interface Message {
   user_id: string;
@@ -43,7 +44,9 @@ const changePassword = async (message: Message): Promise<AmqpMessage> => {
 
     // Hashes and changes the new password
     const hashedPassword = bcrypt.hashSync(message.newPassword, '');
-    await DbUsers.changePassword(message.user_id, hashedPassword);
+    const nuUser = await DbUsers.changePassword(message.user_id, hashedPassword);
+
+    Mailer.passwordChange(nuUser);
 
     return new AmqpMessage(null, 'change-Password', 204);
   } catch (e) {

@@ -10,6 +10,7 @@ dotenv.config();
 import nodeMailer from 'nodemailer';
 import mailgen from 'mailgen';
 import logger from 'tow96-logger';
+import { User } from '../Models';
 
 const { EMAIL, EMAIL_PASSWORD, EMAIL_MAIN_URL, EMAIL_PROVIDER, FRONTEND } = process.env;
 
@@ -71,5 +72,18 @@ export default class Mailer {
     };
 
     Mailer.sendEmail(recipient, 'Towech-FinanceApp registration', content);
+  };
+
+  static passwordChange = (user: User) => {
+    const content: mailgen.Content = {
+      body: {
+        greeting: `Hi`,
+        name: user.name,
+        intro: `Your password has been succesfully changed`,
+        signature: `Thanks`
+      },
+    };
+
+    Mailer.sendEmail(user.username, 'Towech-FinanceApp password change', content);
   };
 }
