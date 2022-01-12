@@ -103,7 +103,9 @@ export default class DbUsers {
    * @param {string} password The new password
    *
    */
-  static changePassword = async (id: string, password: string): Promise<void> => {
-    await userCollection.findByIdAndUpdate(id, { password });
+  static changePassword = async (id: string, password: string): Promise<User> => {
+    const response: User = await userCollection.findByIdAndUpdate(id, { password });
+
+    return response;
   };
 }
