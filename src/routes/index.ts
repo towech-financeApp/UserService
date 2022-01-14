@@ -15,6 +15,7 @@ import register from './register';
 import editUser from './edit-user';
 import changePassword from './change-Password';
 import resetPassword from './password-reset';
+import changeEmail from './change-Email';
 
 /** processMessage
  * switch functions that calls the approppriate process for the worker
@@ -45,6 +46,8 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
       return await changePassword.withReset(payload);
     case 'password-reset':
       return await resetPassword.set(payload);
+    case 'change-email':
+      return await changeEmail.setNew(payload);
     default:
       logger.debug(`Unsupported function type: ${type}`);
       return AmqpMessage.errorMessage(`Unsupported function type: ${type}`);

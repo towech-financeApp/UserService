@@ -111,8 +111,31 @@ export default class DbUsers {
     return response;
   };
 
+  /** setResetToken
+   * assigns a resetToken to the user
+   *
+   * @param {string} id The id of the user
+   * @param {string} token The token
+   *
+   */
   static setResetToken = async (id: string, token: string | undefined): Promise<User> => {
     const user = await userCollection.findByIdAndUpdate(id, { resetToken: token });
+
+    // If there is no user, throws an error
+    if (!user) throw { error: 'Inexistent user' };
+
+    return user;
+  };
+
+  /** updateEmail
+   * updates the users email
+   *
+   * @param {string} id The id of the user
+   * @param {string} email The email
+   *
+   */
+  static updateEmail = async (id: string, email: string): Promise<User> => {
+    const user = await userCollection.findByIdAndUpdate(id, { username: email, accountConfirmed: false });
 
     // If there is no user, throws an error
     if (!user) throw { error: 'Inexistent user' };
