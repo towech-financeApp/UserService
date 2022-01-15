@@ -48,6 +48,10 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
       return await resetPassword.set(payload);
     case 'change-email':
       return await changeEmail.setNew(payload);
+    case 'resend-emailVerify':
+      return await changeEmail.resendEmail(payload);
+    case 'verify-client':
+      return await changeEmail.updateVerification(payload);
     default:
       logger.debug(`Unsupported function type: ${type}`);
       return AmqpMessage.errorMessage(`Unsupported function type: ${type}`);

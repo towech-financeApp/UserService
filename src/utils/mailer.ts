@@ -108,4 +108,25 @@ export default class Mailer {
 
     Mailer.sendEmail(user.username, `Towech-FinanceApp password reset`, content);
   };
+
+  static accountVerification = async (name: string, recipient: string, token: string) => {
+    const content: mailgen.Content = {
+      body: {
+        greeting: `Hi`,
+        name: name,
+        intro: `Verify this email account.`,
+        action: {
+          instructions: `To restore your password, click on the following link. It'll only work for 24 hours`,
+          button: {
+            color: `#22BC66`,
+            text: `Reset my password`,
+            link: `${process.env.FRONTEND}/verify/${token}`,
+          },
+        },
+        signature: `From`,
+      },
+    };
+
+    Mailer.sendEmail(recipient, `Towech-FinanceApp email verification`, content);
+  };
 }

@@ -39,6 +39,7 @@ export default class DbUsers {
       username,
       password,
       role,
+      accountConfirmed: true,
       verified: true,
       createdAt: new Date().toISOString(),
     }).save();
@@ -136,6 +137,20 @@ export default class DbUsers {
    */
   static updateEmail = async (id: string, email: string): Promise<User> => {
     const user = await userCollection.findByIdAndUpdate(id, { username: email, accountConfirmed: false });
+
+    // If there is no user, throws an error
+    if (!user) throw { error: 'Inexistent user' };
+
+    return user;
+  };
+
+  /** updateAccountConfirmed
+   * updates the user to have it's account confirmed
+   *
+   * @param {string} id The users id
+   */
+  static updateAccountConfirmed = async (id: string): Promise<User> => {
+    const user = await userCollection.findByIdAndUpdate(id, { accountConfirmed: true });
 
     // If there is no user, throws an error
     if (!user) throw { error: 'Inexistent user' };
