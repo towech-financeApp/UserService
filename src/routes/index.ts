@@ -30,6 +30,8 @@ const processMessage = async (message: AmqpMessage): Promise<AmqpMessage> => {
 
   // Switches the message to execute the appropriate function
   switch (type) {
+    case 'get-users':
+      return await GetUser.getAll();
     case 'get-byUsername':
       return await GetUser.byUsername(payload);
     case 'get-byId':

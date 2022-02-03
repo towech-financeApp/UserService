@@ -40,4 +40,23 @@ export default class GetUser {
       return AmqpMessage.errorMessage(`Unexpected error`, 500, err);
     }
   };
+
+  static getAll = async (): Promise<AmqpMessage> => {
+    logger.http(`get all users`);
+    try {
+      const users = await DbUsers.getAll();
+
+      // Removes sensitive data
+      users.map((user: any) => {
+        user.password = undefined;
+        user.refreshTokens = undefined;
+        user.singleSessionToken = undefined;
+        user.resetToken = undefined;
+      });
+
+      return new AmqpMessage({users}, 'get-users', 200);
+    } catch (err: any) {
+      return AmqpMessage.errorMessage(`Unexpected error`, 500, err);
+    }
+  };
 }

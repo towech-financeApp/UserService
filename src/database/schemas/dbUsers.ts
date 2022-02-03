@@ -47,6 +47,16 @@ export default class DbUsers {
     return newUser as User;
   };
 
+  /** getAll
+   * Returns a list with all the users
+   *
+   * @returns {User[]} The users from the DB
+   */
+  static getAll = async (): Promise<User[]> => {
+    const response = await userCollection.find();
+    return response as User[]
+  };
+
   /** getByEmail
    * Gets the user with the given email
    *
