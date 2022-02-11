@@ -4,7 +4,7 @@
  *
  * Class that contains functions that validate data
  */
-import User from '../database/schemas/dbUsers';
+import User from '../database/dbUsers';
 
 export default class Validator {
   static validateEmail = async (email: string): Promise<{ valid: boolean; errors: any }> => {

@@ -4,8 +4,12 @@
  *
  * Schema that describes the User and functions that use it
  */
+
+// Libraries
 import mongoose from 'mongoose';
-import { User } from '../../Models';
+
+// Models
+import { Objects } from '../Models';
 
 const UserSchema = new mongoose.Schema({
   name: String,
@@ -33,7 +37,12 @@ export default class DbUsers {
    *
    * @returns The inserted transaction
    */
-  static add = async (name: string, username: string, password: string, role = 'user'): Promise<User> => {
+  static add = async (
+    name: string,
+    username: string,
+    password: string,
+    role = 'user',
+  ): Promise<Objects.User.BackendUser> => {
     const newUser: unknown = await new userCollection({
       name,
       username,
@@ -44,7 +53,7 @@ export default class DbUsers {
       createdAt: new Date().toISOString(),
     }).save();
 
-    return newUser as User;
+    return newUser as Objects.User.BackendUser;
   };
 
   /** getAll
@@ -52,9 +61,9 @@ export default class DbUsers {
    *
    * @returns {User[]} The users from the DB
    */
-  static getAll = async (): Promise<User[]> => {
+  static getAll = async (): Promise<Objects.User.BackendUser[]> => {
     const response = await userCollection.find();
-    return response as User[]
+    return response as Objects.User.BackendUser[];
   };
 
   /** getByEmail
@@ -64,9 +73,9 @@ export default class DbUsers {
    *
    * @returns {User} The user from the DB
    */
-  static getByEmail = async (username: string): Promise<User> => {
+  static getByEmail = async (username: string): Promise<Objects.User.BackendUser> => {
     const response = await userCollection.findOne({ username });
-    return response as User;
+    return response as Objects.User.BackendUser;
   };
 
   /** getById
@@ -76,9 +85,9 @@ export default class DbUsers {
    *
    * @returns {User} The user from the DB
    */
-  static getById = async (id: string): Promise<User> => {
+  static getById = async (id: string): Promise<Objects.User.BackendUser> => {
     const response = await userCollection.findById(id);
-    return response as User;
+    return response as Objects.User.BackendUser;
   };
 
   /** updateTokens
@@ -88,11 +97,11 @@ export default class DbUsers {
    *
    * @returns {User} The updated user
    */
-  static updateTokens = async (user: User): Promise<User> => {
+  static updateTokens = async (user: Objects.User.FrontendUser): Promise<Objects.User.BackendUser> => {
     const { refreshTokens, singleSessionToken } = user;
     const response = await userCollection.findByIdAndUpdate(user._id, { refreshTokens, singleSessionToken });
 
-    return response as User;
+    return response as Objects.User.BackendUser;
   };
 
   /** updateUser
@@ -103,8 +112,12 @@ export default class DbUsers {
    *
    * @returns {User} The updated user
    */
-  static updateUser = async (id: string, contents: User): Promise<User> => {
-    const response: User = await userCollection.findByIdAndUpdate(id, { $set: { ...contents } }, { new: true });
+  static updateUser = async (id: string, contents: Objects.User.BackendUser): Promise<Objects.User.BackendUser> => {
+    const response: Objects.User.BackendUser = await userCollection.findByIdAndUpdate(
+      id,
+      { $set: { ...contents } },
+      { new: true },
+    );
 
     return response;
   };
@@ -116,8 +129,8 @@ export default class DbUsers {
    * @param {string} password The new password
    *
    */
-  static changePassword = async (id: string, password: string): Promise<User> => {
-    const response: User = await userCollection.findByIdAndUpdate(id, { password });
+  static changePassword = async (id: string, password: string): Promise<Objects.User.BackendUser> => {
+    const response: Objects.User.BackendUser = await userCollection.findByIdAndUpdate(id, { password });
 
     return response;
   };
@@ -129,7 +142,7 @@ export default class DbUsers {
    * @param {string} token The token
    *
    */
-  static setResetToken = async (id: string, token: string | undefined): Promise<User> => {
+  static setResetToken = async (id: string, token: string | undefined): Promise<Objects.User.BackendUser> => {
     const user = await userCollection.findByIdAndUpdate(id, { resetToken: token });
 
     // If there is no user, throws an error
@@ -145,7 +158,7 @@ export default class DbUsers {
    * @param {string} email The email
    *
    */
-  static updateEmail = async (id: string, email: string): Promise<User> => {
+  static updateEmail = async (id: string, email: string): Promise<Objects.User.BackendUser> => {
     const user = await userCollection.findByIdAndUpdate(id, { username: email, accountConfirmed: false });
 
     // If there is no user, throws an error
@@ -159,7 +172,7 @@ export default class DbUsers {
    *
    * @param {string} id The users id
    */
-  static updateAccountConfirmed = async (id: string): Promise<User> => {
+  static updateAccountConfirmed = async (id: string): Promise<Objects.User.BackendUser> => {
     const user = await userCollection.findByIdAndUpdate(id, { accountConfirmed: true });
 
     // If there is no user, throws an error

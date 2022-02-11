@@ -10,7 +10,7 @@ dotenv.config();
 import nodeMailer from 'nodemailer';
 import mailgen from 'mailgen';
 import logger from 'tow96-logger';
-import { User } from '../Models';
+import { Objects } from '../Models';
 
 const { EMAIL, EMAIL_PASSWORD, EMAIL_MAIN_URL, EMAIL_PROVIDER, FRONTEND } = process.env;
 
@@ -74,7 +74,7 @@ export default class Mailer {
     Mailer.sendEmail(recipient, 'Towech-FinanceApp registration', content);
   };
 
-  static passwordChange = (user: User) => {
+  static passwordChange = (user: Objects.User.BaseUser) => {
     const content: mailgen.Content = {
       body: {
         greeting: `Hi`,
@@ -87,7 +87,7 @@ export default class Mailer {
     Mailer.sendEmail(user.username, 'Towech-FinanceApp password change', content);
   };
 
-  static resetPasswordEmail = async (user: User, token: string) => {
+  static resetPasswordEmail = async (user: Objects.User.BaseUser, token: string) => {
     const content: mailgen.Content = {
       body: {
         greeting: `Hi`,
