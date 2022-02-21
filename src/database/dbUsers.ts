@@ -113,13 +113,9 @@ export default class DbUsers {
    * @returns {User} The updated user
    */
   static updateUser = async (id: string, contents: Objects.User.BackendUser): Promise<Objects.User.BackendUser> => {
-    const response: Objects.User.BackendUser = await userCollection.findByIdAndUpdate(
-      id,
-      { $set: { ...contents } },
-      { new: true },
-    );
+    const response = await userCollection.findByIdAndUpdate(id, { $set: { ...contents } }, { new: true });
 
-    return response;
+    return response as Objects.User.BackendUser;
   };
 
   /** changePassword
@@ -130,9 +126,9 @@ export default class DbUsers {
    *
    */
   static changePassword = async (id: string, password: string): Promise<Objects.User.BackendUser> => {
-    const response: Objects.User.BackendUser = await userCollection.findByIdAndUpdate(id, { password });
+    const response = await userCollection.findByIdAndUpdate(id, { password }, { new: true });
 
-    return response;
+    return response as Objects.User.BackendUser;
   };
 
   /** setResetToken

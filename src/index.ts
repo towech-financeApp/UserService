@@ -28,11 +28,7 @@ class UserService {
   // Connect to database function
   connectToMongo = (): void => {
     mongoose
-      .connect(this.databaseUrl, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-      })
+      .connect(this.databaseUrl)
       .then(() => logger.info('Connected to database'))
       .catch((err) => {
         if (this.databaseUrl !== '') {
