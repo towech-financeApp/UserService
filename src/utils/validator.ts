@@ -4,7 +4,7 @@
  *
  * Class that contains functions that validate data
  */
-import User from '../database/schemas/dbUsers';
+import User from '../database/dbUsers';
 
 export default class Validator {
   static validateEmail = async (email: string): Promise<{ valid: boolean; errors: any }> => {
@@ -14,7 +14,7 @@ export default class Validator {
     if (!email || email.trim() === '') {
       errors.email = 'e-mail must not be empty';
     } else {
-      const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@[0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9}$/;
+      const regEx = /^[\w._%+-]+@[\w.-]+\.[a-zA-Z]{2,4}$/;
       if (!email.match(regEx)) {
         errors.email = 'e-mail must be a valid address';
       }
@@ -22,6 +22,20 @@ export default class Validator {
 
     // Checks the DB to see if the user already exists
     if (await User.getByEmail(email)) errors.email = 'e-mail already registered';
+
+    return {
+      errors,
+      valid: Object.keys(errors).length < 1,
+    };
+  };
+
+  static validateName = async (name: string): Promise<{ valid: boolean; errors: any }> => {
+    const errors: any = {};
+
+    // Checks if name is not empty
+    if (name.trim() === '') {
+      errors.name = 'name must not be empty';
+    }
 
     return {
       errors,
