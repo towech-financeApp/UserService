@@ -37,6 +37,7 @@ jobs:
 
   build_container:
     runs-on: ubuntu-latest
+    needs: test_code
     steps:
       - uses: actions/checkout@v2
         with:
