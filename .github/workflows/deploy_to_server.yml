@@ -28,6 +28,6 @@ jobs:
           --restart always \
           --name userService \
           -v /srv/logs/UserService:/usr/app/logs \
-          --env-file /srv/environments/UserService \
+          --env-file /srv/environments/UserService.env \
           userservice:latest
           docker image prune -f
