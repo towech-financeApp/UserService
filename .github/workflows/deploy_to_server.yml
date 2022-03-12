@@ -19,13 +19,14 @@ jobs:
   deploy:
     needs: build
     steps:
-      - run: |
-        docker container stop userService
-        docker container rm userService
-        docker run -d \
-        --restart always \
-        --name userService \
-        -v /srv/logs/UserService:/usr/app/logs \
-        --env-file /srv/environments/UserService \
-        userservice:latest
-        docker image prune -f
+      - name: deployment
+        run: |
+          docker container stop userService
+          docker container rm userService
+          docker run -d \
+          --restart always \
+          --name userService \
+          -v /srv/logs/UserService:/usr/app/logs \
+          --env-file /srv/environments/UserService \
+          userservice:latest
+          docker image prune -f
