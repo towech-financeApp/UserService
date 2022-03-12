@@ -22,8 +22,7 @@ jobs:
     steps:
       - name: deployment
         run: |
-          docker container stop userService
-          docker container rm userService
+          docker rm -f userService 2> /dev/null || true
           docker run -d \
           --restart always \
           --name userService \
