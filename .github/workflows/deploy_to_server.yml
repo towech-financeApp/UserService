@@ -1,0 +1,32 @@
+name: deploy to server
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: docker build 
+        run: |
+          docker build . --target prod --tag userservice:latest
+
+  deploy:
+    needs: build
+    steps:
+      - name: deployment
+        run: |
+          docker container stop userService
+          docker container rm userService
+          docker run -d \
+          --restart always \
+          --name userService \
+          -v /srv/logs/UserService:/usr/app/logs \
+          --env-file /srv/environments/UserService \
+          userservice:latest
+          docker image prune -f
