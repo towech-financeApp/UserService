@@ -26,7 +26,7 @@ jobs:
           docker run -d \
           --restart unless-stopped \
           --name userService \
-          --network towech-finance-network
+          --network towech-finance-network \
           -v /srv/logs/UserService:/usr/app/logs \
           --env-file /srv/environments/UserService.env \
           userservice:latest
