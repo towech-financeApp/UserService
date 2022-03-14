@@ -7,30 +7,35 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import nodeMailer from 'nodemailer';
+// Libraries
+const nodeMailer = require('nodemailer'); // eslint-disable-line @typescript-eslint/no-var-requires
+import { google } from 'googleapis';
 import mailgen from 'mailgen';
 import logger from 'tow96-logger';
+
+// Models
 import { Objects } from '../Models';
 
-const { EMAIL, EMAIL_PASSWORD, EMAIL_MAIN_URL, EMAIL_PROVIDER, FRONTEND } = process.env;
+const {
+  EMAIL,
+  EMAIL_MAIN_URL,
+  FRONTEND,
+  EMAIL_CLIENT_ID,
+  EMAIL_CLIENT_SECRET,
+  EMAIL_REFRESH_TOKEN,
+} = process.env;
+const OAuth2 = google.auth.OAuth2;
+const OAuth2_client = new OAuth2(EMAIL_CLIENT_ID, EMAIL_CLIENT_SECRET, "https://developers.google.com/oauthplayground");
+OAuth2_client.setCredentials({ refresh_token: EMAIL_REFRESH_TOKEN });
 
 export default class Mailer {
-  // Creates the email transporter
-  private static transporter = nodeMailer.createTransport({
-    service: EMAIL_PROVIDER,
-    secure: true,
-    auth: {
-      user: EMAIL,
-      pass: EMAIL_PASSWORD,
-    },
-  });
 
   // creates an instance of the mail generator, that has all the common elements
   private static mailGenerator = new mailgen({
     theme: 'default',
     product: {
       name: 'Towech-FinanceApp',
-      link: EMAIL_MAIN_URL || 'pepe',
+      link: EMAIL_MAIN_URL || '',
       //TODO: Create and add logo
       //logo: 'https://avatars3.githubusercontent.com/u/11511711?s=460&u=9f55fbd68f05113f749132b9ca966e34b6337cf0&v=4'
     },
@@ -41,7 +46,28 @@ export default class Mailer {
     const emailBody = Mailer.mailGenerator.generate(content);
     const emailText = Mailer.mailGenerator.generatePlaintext(content);
 
-    const info = await Mailer.transporter.sendMail({
+    const accessToken = await new Promise((resolve, reject) => {
+      OAuth2_client.getAccessToken((err, token) => {
+        if (err) {
+          reject("Failed to create access token :(");
+        }
+        resolve(token);
+      });
+    });
+
+    const transporter = nodeMailer.createTransport({
+      service: 'gmail',
+      auth:{
+        type: 'OAuth2',
+        user: EMAIL,
+        accessToken: accessToken,
+        clientId: EMAIL_CLIENT_ID,
+        clientSecret: EMAIL_CLIENT_SECRET,
+        refreshToken: EMAIL_REFRESH_TOKEN,
+      }
+    })
+
+    const info = await transporter.sendMail({
       from: `Towech-FinanceApp <${EMAIL}>`,
       to: recipient,
       subject: subject,
