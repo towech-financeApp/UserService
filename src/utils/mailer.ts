@@ -49,9 +49,7 @@ export default class Mailer {
       });
 
       const transporter = nodeMailer.createTransport({
-        tls: {
-          rejectUnauthorized: false
-        },
+        secure: true,
         service: 'gmail',
         auth: {
           type: 'OAuth2',
