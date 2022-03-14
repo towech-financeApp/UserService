@@ -48,6 +48,8 @@ export default class Mailer {
         });
       });
 
+      logger.debug(accessToken);
+
       const transporter = nodeMailer.createTransport({
         tls: {
           rejectUnauthorized: false
@@ -62,6 +64,8 @@ export default class Mailer {
           refreshToken: EMAIL_REFRESH_TOKEN,
         },
       });
+
+      logger.debug('transport created');
 
       const info = await transporter.sendMail({
         from: `Towech-FinanceApp <${EMAIL}>`,
