@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    if: "contains(github.event.head_commit.message, 'build-developmet')" # will run if the commit contains that phrase
+    if: "contains(github.event.head_commit.message, 'build-development')" # will run if the commit contains that phrase
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
