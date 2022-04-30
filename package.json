@@ -46,7 +46,7 @@
     "mailgen": "^2.0.16",
     "mongoose": "^6.2.3",
     "nodemailer": "^6.7.2",
-    "tow96-amqpwrapper": "^0.1.2",
+    "tow96-amqpwrapper": "^0.2.0",
     "tow96-logger": "^0.1.2"
   }
 }

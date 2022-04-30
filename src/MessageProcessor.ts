@@ -65,7 +65,7 @@ export default class MessageProcessor {
    *
    * @returns An empty response
    */
-  private static changeEmail = async (message: Requests.WorkerChangeEmail): Promise<AmqpMessage> => {
+  private static changeEmail = async (message: Requests.WorkerChangeEmail): Promise<AmqpMessage<null>> => {
     logger.http(`Change email for user: ${message._id}`);
 
     try {
@@ -96,7 +96,7 @@ export default class MessageProcessor {
    *
    * @returns an empty message
    */
-  private static changePassword = async (message: Requests.WorkerChangePassword): Promise<AmqpMessage> => {
+  private static changePassword = async (message: Requests.WorkerChangePassword): Promise<AmqpMessage<null>> => {
     logger.http(`Change password for user: ${message._id}`);
 
     try {
@@ -139,7 +139,7 @@ export default class MessageProcessor {
    *
    * @returns An empty response
    */
-  private static changePasswordReset = async (message: Requests.WorkerChangePassword): Promise<AmqpMessage> => {
+  private static changePasswordReset = async (message: Requests.WorkerChangePassword): Promise<AmqpMessage<null>> => {
     logger.http(`Change password for user: ${message._id}`);
 
     try {
@@ -181,7 +181,7 @@ export default class MessageProcessor {
    *
    * @returns The edited user
    */
-  private static editUser = async (message: Objects.User.FrontendUser): Promise<AmqpMessage> => {
+  private static editUser = async (message: Objects.User.FrontendUser): Promise<AmqpMessage<Objects.User.BackendUser>> => {
     logger.http(`Edit user: ${message._id}`);
 
     try {
@@ -203,7 +203,7 @@ export default class MessageProcessor {
       if (Object.keys(errors).length > 0) return AmqpMessage.errorMessage('Invalid Fields', 422, errors);
 
       // If there aren't any changes, returns a 304 code
-      if (Object.keys(content).length < 1) return new AmqpMessage(null, 'edit-User', 304);
+      if (Object.keys(content).length < 1) return new AmqpMessage({} as Objects.User.BackendUser, 'edit-User', 304);
 
       // Updates the transaction
       const updatedUser = await DbUsers.updateUser(message._id, content);
@@ -219,7 +219,7 @@ export default class MessageProcessor {
    *
    * @returns An array of the users
    */
-  private static getAllUsers = async (): Promise<AmqpMessage> => {
+  private static getAllUsers = async (): Promise<AmqpMessage<Objects.User.BackendUser[]>> => {
     logger.http(`get all users`);
 
     try {
@@ -237,7 +237,7 @@ export default class MessageProcessor {
    *
    * @returns the user
    */
-  private static getUserByUsername = async (message: Requests.WorkerGetUserByUsername): Promise<AmqpMessage> => {
+  private static getUserByUsername = async (message: Requests.WorkerGetUserByUsername): Promise<AmqpMessage<Objects.User.BackendUser>> => {
     logger.http(`Get by email: ${message.username}`);
 
     try {
@@ -255,7 +255,7 @@ export default class MessageProcessor {
    *
    * @returns the user
    */
-  private static getUserById = async (message: Requests.WorkerGetUserById): Promise<AmqpMessage> => {
+  private static getUserById = async (message: Requests.WorkerGetUserById): Promise<AmqpMessage<Objects.User.BackendUser>> => {
     logger.http(`Get by id: ${message._id}`);
 
     try {
@@ -273,7 +273,7 @@ export default class MessageProcessor {
    *
    * @returns The updated user
    */
-  private static logUser = async (message: Objects.User.FrontendUser): Promise<AmqpMessage> => {
+  private static logUser = async (message: Objects.User.FrontendUser): Promise<AmqpMessage<Objects.User.BackendUser>> => {
     logger.http(`Log user: ${message._id}`);
 
     try {
@@ -290,7 +290,7 @@ export default class MessageProcessor {
    *
    * @returns the new user
    */
-  private static register = async (message: Requests.WorkerRegisterUser): Promise<AmqpMessage> => {
+  private static register = async (message: Requests.WorkerRegisterUser): Promise<AmqpMessage<Objects.User.BackendUser>> => {
     logger.http(`Registering user under email: ${message.email}`);
 
     try {
@@ -333,7 +333,7 @@ export default class MessageProcessor {
    *
    * @returns An empty response
    */
-  private static resendEmailVerification = async (message: Requests.WorkerChangeEmail): Promise<AmqpMessage> => {
+  private static resendEmailVerification = async (message: Requests.WorkerChangeEmail): Promise<AmqpMessage<null>> => {
     try {
       const dbUser = await DbUsers.getById(message._id);
 
@@ -354,7 +354,7 @@ export default class MessageProcessor {
    *
    * @returns An empty response
    */
-  private static resetPassword = async (message: Requests.WorkerPasswordReset): Promise<AmqpMessage> => {
+  private static resetPassword = async (message: Requests.WorkerPasswordReset): Promise<AmqpMessage<null>> => {
     logger.http(`Reset password for user: ${message._id}`);
 
     try {
@@ -376,7 +376,7 @@ export default class MessageProcessor {
    *
    * @returns An empty response
    */
-  private static verifyEmail = async (message: Requests.WorkerChangeEmail): Promise<AmqpMessage> => {
+  private static verifyEmail = async (message: Requests.WorkerChangeEmail): Promise<AmqpMessage<null>> => {
     logger.http(`Updating verification for user: ${message._id}`);
 
     try {

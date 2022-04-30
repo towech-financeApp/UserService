@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema({
   createdAt: String,
 });
 
-const userCollection = mongoose.model('Users', UserSchema);
+const userCollection = mongoose.model<Objects.User.BackendUser>('Users', UserSchema);
 
 // Functions to communicate with the DB
 export default class DbUsers {
