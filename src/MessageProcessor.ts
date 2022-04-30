@@ -181,7 +181,9 @@ export default class MessageProcessor {
    *
    * @returns The edited user
    */
-  private static editUser = async (message: Objects.User.FrontendUser): Promise<AmqpMessage<Objects.User.BackendUser>> => {
+  private static editUser = async (
+    message: Objects.User.FrontendUser,
+  ): Promise<AmqpMessage<Objects.User.BackendUser>> => {
     logger.http(`Edit user: ${message._id}`);
 
     try {
@@ -237,7 +239,9 @@ export default class MessageProcessor {
    *
    * @returns the user
    */
-  private static getUserByUsername = async (message: Requests.WorkerGetUserByUsername): Promise<AmqpMessage<Objects.User.BackendUser>> => {
+  private static getUserByUsername = async (
+    message: Requests.WorkerGetUserByUsername,
+  ): Promise<AmqpMessage<Objects.User.BackendUser>> => {
     logger.http(`Get by email: ${message.username}`);
 
     try {
@@ -255,7 +259,9 @@ export default class MessageProcessor {
    *
    * @returns the user
    */
-  private static getUserById = async (message: Requests.WorkerGetUserById): Promise<AmqpMessage<Objects.User.BackendUser>> => {
+  private static getUserById = async (
+    message: Requests.WorkerGetUserById,
+  ): Promise<AmqpMessage<Objects.User.BackendUser>> => {
     logger.http(`Get by id: ${message._id}`);
 
     try {
@@ -273,7 +279,9 @@ export default class MessageProcessor {
    *
    * @returns The updated user
    */
-  private static logUser = async (message: Objects.User.FrontendUser): Promise<AmqpMessage<Objects.User.BackendUser>> => {
+  private static logUser = async (
+    message: Objects.User.FrontendUser,
+  ): Promise<AmqpMessage<Objects.User.BackendUser>> => {
     logger.http(`Log user: ${message._id}`);
 
     try {
@@ -290,7 +298,9 @@ export default class MessageProcessor {
    *
    * @returns the new user
    */
-  private static register = async (message: Requests.WorkerRegisterUser): Promise<AmqpMessage<Objects.User.BackendUser>> => {
+  private static register = async (
+    message: Requests.WorkerRegisterUser,
+  ): Promise<AmqpMessage<Objects.User.BackendUser>> => {
     logger.http(`Registering user under email: ${message.email}`);
 
     try {

@@ -18,7 +18,7 @@ import { Objects } from '../Models';
 
 const { EMAIL, FRONTEND, EMAIL_CLIENT_ID, EMAIL_CLIENT_SECRET, EMAIL_REFRESH_TOKEN } = process.env;
 const OAuth2 = google.auth.OAuth2;
-const OAuth2_client = new OAuth2(EMAIL_CLIENT_ID, EMAIL_CLIENT_SECRET, "https://developers.google.com/oauthplayground");
+const OAuth2_client = new OAuth2(EMAIL_CLIENT_ID, EMAIL_CLIENT_SECRET, 'https://developers.google.com/oauthplayground');
 OAuth2_client.setCredentials({ refresh_token: EMAIL_REFRESH_TOKEN });
 
 export default class Mailer {
