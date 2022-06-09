@@ -33,6 +33,8 @@ export default class MessageProcessor {
         return await MessageProcessor.changePassword(payload);
       case 'change-Password-Force':
         return await MessageProcessor.changePasswordReset(payload);
+      case 'delete-User':
+        return await MessageProcessor.deleteUser(payload);
       case 'edit-User':
         return await MessageProcessor.editUser(payload);
       case 'get-byUsername':
@@ -170,6 +172,26 @@ export default class MessageProcessor {
       await DbUsers.setResetToken(message._id, undefined);
 
       return new AmqpMessage(null, 'change-Password-Force', 204);
+    } catch (e) {
+      return AmqpMessage.errorMessage(`Unexpected error`, 500, e);
+    }
+  };
+
+  /** deleteUser
+   * Edits the user information
+   * @param {Objects.User.BackendUser} message
+   *
+   * @returns The edited user
+   */
+  private static deleteUser = async (
+    message: Objects.User.BaseUser,
+  ): Promise<AmqpMessage<Objects.User.BackendUser>> => {
+    logger.http(`Delete user: ${message._id}`);
+
+    try {
+      const deletedUser = await DbUsers.delete(message._id);
+
+      return new AmqpMessage(deletedUser, 'edit-User', 200);
     } catch (e) {
       return AmqpMessage.errorMessage(`Unexpected error`, 500, e);
     }

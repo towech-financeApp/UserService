@@ -56,6 +56,15 @@ export default class DbUsers {
     return newUser as Objects.User.BackendUser;
   };
 
+  /** delete
+   * Removes a user from the DB
+   *
+   * @param {string} id
+   */
+  static delete = async (id: string): Promise<Objects.User.BackendUser> => {
+    return (await userCollection.findByIdAndDelete(id)) as Objects.User.BackendUser;
+  };
+
   /** getAll
    * Returns a list with all the users
    *
