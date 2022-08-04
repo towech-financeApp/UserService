@@ -11,7 +11,7 @@ import mongoose from 'mongoose';
 // Models
 import { Objects } from '../Models';
 
-const UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema<Objects.User.BackendUser>({
   name: String,
   username: String,
   password: String,

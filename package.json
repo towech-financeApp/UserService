@@ -2,14 +2,14 @@
   "name": "user-service_worker",
   "version": "1.2.1",
   "description": "Worker for the Towech-Finance User service",
-  "main": "src/index.ts",
+  "main": "src/server.ts",
   "scripts": {
     "build": "tsc",
     "dev": "ts-node-dev --poll --respawn .",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"./src/**\" --ext .ts",
     "test": "echo \"should run jest --config jestconfig.json\"",
-    "start": "node dist/index.js"
+    "start": "node dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -42,7 +42,7 @@
     "bcrypt-nodejs": "0.0.3",
     "dotenv": "^16.0.0",
     "express": "^4.17.1",
-    "googleapis": "^103.0.0",
+    "googleapis": "^105.0.0",
     "mailgen": "^2.0.16",
     "mongoose": "^6.2.3",
     "nodemailer": "^6.7.2",

@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
+    "target": "es5",
     "module": "commonjs",                           
-    "outDir": "./dist",                              
+    "esModuleInterop": true,    
+    "declaration": true,                    
+    "outDir": "./lib",                              
     "strict": true,                                 
-    "esModuleInterop": true,                        
     "skipLibCheck": true,                           
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["./src/@types"]
-  }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "**/__tests__/*", "src/server.ts"]
 }
