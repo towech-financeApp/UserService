@@ -8,8 +8,9 @@
     "strict": true,                                 
     "skipLibCheck": true,                           
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./src/@types"]
+    "types": ["jest"],
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*", "src/server.ts"]
+  "exclude": ["node_modules", "**/tests/*", "src/server.ts"]
 }

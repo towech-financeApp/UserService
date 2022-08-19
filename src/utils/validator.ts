@@ -29,7 +29,7 @@ export default class Validator {
     };
   };
 
-  static validateName = async (name: string): Promise<{ valid: boolean; errors: any }> => {
+  static validateName = (name: string): { valid: boolean; errors: any } => {
     const errors: any = {};
 
     // Checks if name is not empty

@@ -108,7 +108,11 @@ export default class DbUsers {
    */
   static updateTokens = async (user: Objects.User.FrontendUser): Promise<Objects.User.BackendUser> => {
     const { refreshTokens, singleSessionToken } = user;
-    const response = await userCollection.findByIdAndUpdate(user._id, { refreshTokens, singleSessionToken });
+    const response = await userCollection.findByIdAndUpdate(
+      user._id,
+      { refreshTokens, singleSessionToken },
+      { new: true },
+    );
 
     return response as Objects.User.BackendUser;
   };
@@ -148,7 +152,7 @@ export default class DbUsers {
    *
    */
   static setResetToken = async (id: string, token: string | undefined): Promise<Objects.User.BackendUser> => {
-    const user = await userCollection.findByIdAndUpdate(id, { resetToken: token });
+    const user = await userCollection.findByIdAndUpdate(id, { resetToken: token }, { new: true });
 
     // If there is no user, throws an error
     if (!user) throw { error: 'Inexistent user' };
@@ -164,7 +168,11 @@ export default class DbUsers {
    *
    */
   static updateEmail = async (id: string, email: string): Promise<Objects.User.BackendUser> => {
-    const user = await userCollection.findByIdAndUpdate(id, { username: email, accountConfirmed: false });
+    const user = await userCollection.findByIdAndUpdate(
+      id,
+      { username: email, accountConfirmed: false },
+      { new: true },
+    );
 
     // If there is no user, throws an error
     if (!user) throw { error: 'Inexistent user' };
@@ -178,7 +186,7 @@ export default class DbUsers {
    * @param {string} id The users id
    */
   static updateAccountConfirmed = async (id: string): Promise<Objects.User.BackendUser> => {
-    const user = await userCollection.findByIdAndUpdate(id, { accountConfirmed: true });
+    const user = await userCollection.findByIdAndUpdate(id, { accountConfirmed: true }, { new: true });
 
     // If there is no user, throws an error
     if (!user) throw { error: 'Inexistent user' };
